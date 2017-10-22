@@ -6,61 +6,78 @@ class RestaurantManager {
     private static Scanner input = new Scanner(System.in);
 
     private List<String> menuName = new ArrayList<>();
+    private List<String> order = new ArrayList<>();
     private List<Double> menuPrice = new ArrayList<>();
     private int[] menuQuantity;
+
+    public void recordOrder(int orderNumber, String[] order, double total) throws IOException {
+        String logFilePath = "data/orderLog.log";
+        OutputStream os = null;
+        try {
+            os = new FileOutputStream(logFilePath);
+        } catch (FileNotFoundException ex) {
+            System.out.println("Couldn't open output file " + logFilePath);
+            return;
+        }
+        PrintStream ps = new PrintStream(os);
+        ps.println("Order number: " + orderNumber);
+        for (String anOrder : order) {
+            System.out.println(anOrder);
+        }
+        ps.println("Total: " + total);
+        ps.close();
+    }
+
+    private void setMenu() {
+        String menuPath = "data/menuFile.txt";
+        setMenu(menuPath);
+    }
+
+    private void setMenu(String fileName) {
+        ClassLoader cl = RestaurantManager.class.getClassLoader();
+        InputStream fi = cl.getResourceAsStream(fileName);
+        Scanner menuScanner = new Scanner(fi);
+        int count = 0;
+        while (menuScanner.hasNextLine()) {
+            String line = menuScanner.nextLine();
+            if (line.equals("") || line.startsWith("#")) {
+                continue;
+            }
+            count += 1;
+            menuName.add(line.split(";")[0]);
+            menuPrice.add(Double.valueOf(line.split(";")[1].replaceAll(" ", "")));
+        }
+        menuQuantity = new int[count];
+        menuScanner.close();
+    }
+
+    void init() throws IOException {
+        setMenu();
+        String logFilePath = "data/orderLog.log";
+        try {
+            OutputStream os = new FileOutputStream(logFilePath);
+        } catch (IOException e) {
+            System.out.println("Log File could not be found");
+        }
+    }
 
     /**
      * Check if there is "menuFile.txt" existing in the directory
      * and put all menu name and price in the array list.
      * If it doesn't exist, the method will ask user if they want to create new menu
      */
-    void getMenuDetail() {
-        String filePath = "menuFile.txt";
-        File menuFile = new File(filePath);
-        try {
-            Scanner fileScanner = new Scanner(menuFile);
-            while (fileScanner.hasNext()) {
-                String[] menu = fileScanner.nextLine().split(":");
-                menuName.add(menu[0].substring(0, menu[0].length() - 1));
-                menuPrice.add(Double.valueOf(menu[1]));
-            }
-            menuQuantity = new int[menuName.size()];
-        } catch (IOException e) {
-            System.out.println("File not found");
-            System.out.println("Create new menu? (y/n): ");
-            if (input.next().charAt(0) == 'y') {
-                createMenu(filePath);
-                menuQuantity = new int[menuName.size()];
-            } else {
-                System.exit(0);
-            }
-        }
+    public String[] getMenuItems() {
+        String[] name = new String[menuName.size()];
+        menuName.toArray(name);
+        return name;
     }
 
-
-    /**
-     * If file "menuFile.txt" doesn't exist, and user choose to add menu
-     * the method simply get menu name and price and put it in the file
-     * (( If there is any further requirement to add a menu to the existing file,
-     * it could be done here by appending ))
-     *
-     * @param filePath is a path to create or access "menuFile.txt"
-     */
-    private void createMenu(String filePath) {
-        try {
-            FileWriter fileWriter = new FileWriter(filePath, true);
-            PrintWriter printWriter = new PrintWriter(fileWriter);
-            while (true) {
-                System.out.println("Menu (name : price) -> Type stop to quit: ");
-                String menu = input.nextLine();
-                if (menu.equalsIgnoreCase("stop")) break;
-                printWriter.println(menu);
-            }
-            fileWriter.close();
-        } catch (IOException e) {
-            System.out.println("Unable to create file");
-            System.exit(0);
+    public double[] getPrices() {
+        double[] price = new double[menuPrice.size()];
+        for (int i = 0; i < menuPrice.size(); i++) {
+            price[i] = menuPrice.get(i);
         }
+        return price;
     }
 
     /**
@@ -114,7 +131,7 @@ class RestaurantManager {
      *
      * @param isCheckOut is true if user want to check out
      */
-    void checkOrder(boolean isCheckOut) {
+    void checkOrder(boolean isCheckOut) throws IOException {
         double totalPrice = 0.00;
 
         System.out.println();
@@ -129,12 +146,19 @@ class RestaurantManager {
                 totalPrice += eachNetPrice;
                 System.out.printf("::%2d. %-20s :: %3d :: %6.2f ::%n", j, menuName.get(i), menuQuantity[i], eachNetPrice);
                 j++;
+                order.add(menuName.get(i));
             }
         }
 
         if (isCheckOut) {
             double discount = totalPrice * getDiscount() / 100;
             System.out.printf("::%-31s :: -%5.2f ::%n", "Discount", discount);
+            totalPrice -= discount;
+            String[] theOrder = new String[order.size()];
+            order.toArray(theOrder);
+            Random rand = new Random();
+            int orderNum = rand.nextInt(10000) + 1;
+            recordOrder(orderNum, theOrder, totalPrice);
         }
 
         System.out.println("----------------------------------------------");

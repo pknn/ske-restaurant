@@ -1,0 +1,7 @@
+# Description; price
+
+Cheese Pizza;  220.0
+Pizza with mushroom; 250.0
+Salad, small;   30.0
+# Coke;         20.0   -- we aren't selling coke any more. Its bad food
+Ice Tea;        20.0

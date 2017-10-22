@@ -14,7 +14,7 @@ public class SKERestaurant {
         boolean isOpen = true;
 
         System.out.println("Welcome to SKE Restaurant");
-        manager.getMenuDetail();
+        manager.init();
         while (isOpen) {
             System.out.println("What do you want to do?");
             System.out.print("(o)rder, (c)heck order, check ou(t): ");
