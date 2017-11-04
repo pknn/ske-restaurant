@@ -1,0 +1,3 @@
+## code; title; percent
+ske15; SKE Student; 15.00
+ku77; KU Student; 5.00

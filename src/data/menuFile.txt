@@ -5,3 +5,10 @@ Pizza with mushroom; 250.0
 Salad, small;   30.0
 # Coke;         20.0   -- we aren't selling coke any more. Its bad food
 Ice Tea;        20.0
+Pasta;        70.0
+Cabonara;        70.0
+French Fries;        50.0
+Chicken;        60.0
+Sprite;        20.0
+Donut;        30.0
+Nuggets;        40.0
