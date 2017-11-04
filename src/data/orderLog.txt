@@ -1,0 +1,17 @@
+Order Number: 00000
+
+Cheese Pizza           1 Piece(s) : 220.00 Baht
+Pizza with mushroom    2 Piece(s) : 500.00 Baht
+                        Net Total : 770.40 Baht
+
+Order Number: 00001
+
+Salad, small           2 Piece(s) :  60.00 Baht
+                        Net Total : 64.20 Baht
+
+Order Number: 00002
+
+Cheese Pizza           3 Piece(s) : 660.00 Baht
+Ice Tea                2 Piece(s) :  40.00 Baht
+                        Net Total : 636.65 Baht
+
